@@ -4,8 +4,14 @@
 // Update these with values suitable for your network.
 #include "../lib/settings.h"
 
+#ifdef TLS
+WiFiClientSecure espClient;
+static unsigned int const mqttPort = 8883;
+#else
 WiFiClient espClient;
-// WiFiClientSecure espClient;
+static unsigned int const mqttPort = 1883;
+#endif
+
 PubSubClient client(espClient);
 RCSwitch mySwitch = RCSwitch();
 
@@ -129,7 +135,7 @@ void setup() {
   Serial.println(WiFi.macAddress());
   #endif
 
-  client.setServer(server, 1883);
+  client.setServer(server, mqttPort);
   client.setCallback(callback);
 
   // Transmitter is connected to NodeMCU Pin ~D3 = 0
